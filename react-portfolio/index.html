@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satya Sisir - Portfolio (React)</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="src/styles.css">
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <!-- React & ReactDOM from CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel Standalone for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- External Libraries -->
+    <script src="https://unpkg.com/scrollreveal@4.0.9/dist/scrollreveal.min.js"></script>
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+
+    <!-- All React Components and App (Inline to avoid CORS issues) -->
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // ===== HEADER COMPONENT =====
+        function Header() {
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const [activeSection, setActiveSection] = useState('home');
+
+            useEffect(() => {
+                const handleScroll = () => {
+                    const sections = document.querySelectorAll('section');
+                    const scrollPos = window.scrollY + 150;
+
+                    sections.forEach(section => {
+                        const top = section.offsetTop;
+                        const height = section.offsetHeight;
+                        const id = section.getAttribute('id');
+
+                        if (scrollPos >= top && scrollPos < top + height) {
+                            setActiveSection(id);
+                        }
+                    });
+
+                    if (isMenuOpen) {
+                        setIsMenuOpen(false);
+                    }
+                };
+
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, [isMenuOpen]);
+
+            const toggleMenu = () => {
+                setIsMenuOpen(!isMenuOpen);
+            };
+
+            const handleNavClick = (e) => {
+                e.preventDefault();
+                const targetId = e.currentTarget.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
+                setIsMenuOpen(false);
+            };
+
+            return (
+                <header>
+                    <a href="#home" className="logo" onClick={handleNavClick}>Satya Sisir</a>
+                    <i
+                        className={`fa-solid ${isMenuOpen ? 'fa-xmark' : 'fa-bars'}`}
+                        id="menu-icon"
+                        onClick={toggleMenu}
+                    ></i>
+
+                    <nav className={`navbar ${isMenuOpen ? 'active' : ''}`}>
+                        <a href="#home" className={activeSection === 'home' ? 'active' : ''} onClick={handleNavClick}>Home</a>
+                        <a href="#services" className={activeSection === 'services' ? 'active' : ''} onClick={handleNavClick}>Services</a>
+                        <a href="#skills" className={activeSection === 'skills' ? 'active' : ''} onClick={handleNavClick}>Skills</a>
+                        <a href="#education" className={activeSection === 'education' ? 'active' : ''} onClick={handleNavClick}>Education</a>
+                        <a href="#contact" className={activeSection === 'contact' ? 'active' : ''} onClick={handleNavClick}>Contact</a>
+                    </nav>
+                </header>
+            );
+        }
+
+        // ===== HERO COMPONENT =====
+        function Hero() {
+            useEffect(() => {
+                const typed = new Typed('.multiple-text', {
+                    strings: [
+                        'Student',
+                        'Web Developer',
+                        'Web Designer',
+                        'Software Developer',
+                        'Programmer',
+                        'Coder'
+                    ],
+                    typeSpeed: 100,
+                    backSpeed: 100,
+                    backDelay: 1000,
+                    loop: true
+                });
+
+                return () => {
+                    typed.destroy();
+                };
+            }, []);
+
+            return (
+                <section className="home" id="home">
+                    <div className="home-content">
+                        <h1>Hi, It's <span>Satya Sisir</span></h1>
+                        <h3 className="typing-text">I'm a <span className="multiple-text"></span></h3>
+                        <p>
+                            I am a passionate student with a deep interest in web development, coding, and software development. I am
+                            always exploring new technologies and focusing on building interactive, dynamic websites. My coding
+                            expertise spans various languages, including HTML, CSS, JavaScript, and Python. Dedicated to sharpening
+                            my problem-solving abilities, I actively work on personal projects to enhance my skills. With the goal
+                            of becoming a full-stack developer, I am committed to creating innovative and efficient solutions.
+                        </p>
+                        <div className="social-icons">
+                            <a href="#"><i className="fa-brands fa-whatsapp"></i></a>
+                            <a href="#"><i className="fa-brands fa-github"></i></a>
+                            <a href="#"><i className="fa-brands fa-facebook"></i></a>
+                            <a href="https://www.instagram.com/satya_sisir__.pvt/?hl=en">
+                                <i className="fa-brands fa-instagram"></i>
+                            </a>
+                        </div>
+                        <a href="#contact" className="btn">Hire me</a>
+                    </div>
+                    <div className="home-img">
+                        <img src="public/images/new_main.jpg" alt="Satya Sisir" />
+                    </div>
+                </section>
+            );
+        }
+
+        // ===== SERVICES COMPONENT =====
+        function Services() {
+            const services = [
+                {
+                    icon: 'fa-solid fa-code',
+                    title: 'Web Development',
+                    description: 'Building responsive and dynamic websites using modern technologies like HTML, CSS, JavaScript, and more.'
+                },
+                {
+                    icon: 'fa-solid fa-palette',
+                    title: 'UI/UX Design',
+                    description: 'Designing intuitive and visually appealing user interfaces to enhance user experience.'
+                },
+                {
+                    icon: 'fa-brands fa-android',
+                    title: 'App Development',
+                    description: 'Creating functional and efficient mobile applications for various platforms.'
+                }
+            ];
+
+            return (
+                <section className="services" id="services">
+                    <h2 className="heading">My <span>Services</span></h2>
+                    <div className="services-container">
+                        {services.map((service, index) => (
+                            <div className="services-box" key={index}>
+                                <i className={service.icon}></i>
+                                <h3>{service.title}</h3>
+                                <p>{service.description}</p>
+                                <a href="#" className="btn">Read More</a>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            );
+        }
+
+        // ===== SKILLS COMPONENT =====
+        function Skills() {
+            const codingSkills = [
+                { name: 'HTML', percentage: 90 },
+                { name: 'CSS', percentage: 85 },
+                { name: 'JavaScript', percentage: 75 },
+                { name: 'Python', percentage: 80 }
+            ];
+
+            const professionalSkills = [
+                { name: 'Web Design', percentage: 95 },
+                { name: 'Web Development', percentage: 85 },
+                { name: 'Graphic Design', percentage: 70 },
+                { name: 'SEO', percentage: 60 }
+            ];
+
+            const SkillBar = ({ skill }) => (
+                <div className="progress">
+                    <h3>{skill.name} <span>{skill.percentage}%</span></h3>
+                    <div className="bar">
+                        <span style={{ width: `${skill.percentage}%` }}></span>
+                    </div>
+                </div>
+            );
+
+            return (
+                <section className="skills" id="skills">
+                    <h2 className="heading">My <span>Skills</span></h2>
+                    <div className="skills-row">
+                        <div className="skills-column">
+                            <h3 className="title">Coding Skills</h3>
+                            <div className="skills-box">
+                                <div className="skills-content">
+                                    {codingSkills.map((skill, index) => (
+                                        <SkillBar key={index} skill={skill} />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="skills-column">
+                            <h3 className="title">Professional Skills</h3>
+                            <div className="skills-box">
+                                <div className="skills-content">
+                                    {professionalSkills.map((skill, index) => (
+                                        <SkillBar key={index} skill={skill} />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        // ===== EDUCATION COMPONENT =====
+        function Education() {
+            const timelineData = [
+                {
+                    date: '2021 - 2023',
+                    title: 'High School',
+                    description: 'Completed my secondary education with a focus on Mathematics and Computer Science, building a strong foundation for my technical career.'
+                },
+                {
+                    date: '2023 - Present',
+                    title: 'University Degree',
+                    description: "Currently pursuing a Bachelor's degree in Computer Science, diving deep into algorithms, data structures, and software engineering principles."
+                },
+                {
+                    date: '2024',
+                    title: 'Internship',
+                    description: 'Gained practical experience as a web development intern, working on real-world projects and collaborating with senior developers.'
+                }
+            ];
+
+            return (
+                <section className="education" id="education">
+                    <h2 className="heading">My <span>Journey</span></h2>
+                    <div className="timeline-items">
+                        {timelineData.map((item, index) => (
+                            <div className="timeline-item" key={index}>
+                                <div className="timeline-dot"></div>
+                                <div className="timeline-date">{item.date}</div>
+                                <div className="timeline-content">
+                                    <h3>{item.title}</h3>
+                                    <p>{item.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            );
+        }
+
+        // ===== CONTACT COMPONENT =====
+        function Contact() {
+            const [formData, setFormData] = useState({
+                fullName: '',
+                email: '',
+                mobile: '',
+                subject: '',
+                message: ''
+            });
+
+            const handleChange = (e) => {
+                const { name, value } = e.target;
+                setFormData(prev => ({
+                    ...prev,
+                    [name]: value
+                }));
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                console.log('Form submitted:', formData);
+                alert('Thank you for your message! I will get back to you soon.');
+
+                setFormData({
+                    fullName: '',
+                    email: '',
+                    mobile: '',
+                    subject: '',
+                    message: ''
+                });
+            };
+
+            return (
+                <section className="contact" id="contact">
+                    <h2 className="heading">Contact <span>Me</span></h2>
+                    <form onSubmit={handleSubmit}>
+                        <div className="input-box">
+                            <input
+                                type="text"
+                                name="fullName"
+                                placeholder="Full Name"
+                                value={formData.fullName}
+                                onChange={handleChange}
+                                required
+                            />
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="Email Address"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="input-box">
+                            <input
+                                type="number"
+                                name="mobile"
+                                placeholder="Mobile Number"
+                                value={formData.mobile}
+                                onChange={handleChange}
+                                required
+                            />
+                            <input
+                                type="text"
+                                name="subject"
+                                placeholder="Email Subject"
+                                value={formData.subject}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <textarea
+                            name="message"
+                            cols="30"
+                            rows="10"
+                            placeholder="Your Message"
+                            value={formData.message}
+                            onChange={handleChange}
+                            required
+                        ></textarea>
+                        <input type="submit" value="Send Message" className="btn" />
+                    </form>
+                </section>
+            );
+        }
+
+        // ===== FOOTER COMPONENT =====
+        function Footer() {
+            const scrollToTop = (e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            return (
+                <footer className="footer">
+                    <div className="footer-text">
+                        <p>Copyright &copy; 2026 by Satya Sisir | All Rights Reserved.</p>
+                    </div>
+                    <div className="footer-iconTop">
+                        <a href="#home" onClick={scrollToTop}>
+                            <i className="fa-solid fa-angle-up"></i>
+                        </a>
+                    </div>
+                </footer>
+            );
+        }
+
+        // ===== MAIN APP COMPONENT =====
+        function App() {
+            useEffect(() => {
+                ScrollReveal({
+                    reset: true,
+                    distance: '80px',
+                    duration: 2000,
+                    delay: 200
+                });
+
+                ScrollReveal().reveal('.home-content, .heading', { origin: 'top' });
+                ScrollReveal().reveal('.home-img, .services-container, .skills-box, .contact form', { origin: 'bottom' });
+                ScrollReveal().reveal('.home-content h1', { origin: 'left' });
+            }, []);
+
+            return (
+                <>
+                    <Header />
+                    <Hero />
+                    <Services />
+                    <Skills />
+                    <Education />
+                    <Contact />
+                    <Footer />
+                </>
+            );
+        }
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
